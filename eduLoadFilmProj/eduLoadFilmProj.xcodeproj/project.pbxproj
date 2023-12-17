@@ -13,6 +13,7 @@
 		4DEB23592B2F503200948B1A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4DEB23572B2F503200948B1A /* Main.storyboard */; };
 		4DEB235B2B2F503400948B1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DEB235A2B2F503400948B1A /* Assets.xcassets */; };
 		4DEB235E2B2F503400948B1A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4DEB235C2B2F503400948B1A /* LaunchScreen.storyboard */; };
+		4DEB23662B2F586700948B1A /* FilmViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEB23652B2F586700948B1A /* FilmViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		4DEB235A2B2F503400948B1A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4DEB235D2B2F503400948B1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4DEB235F2B2F503400948B1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4DEB23652B2F586700948B1A /* FilmViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				4DEB23512B2F503200948B1A /* AppDelegate.swift */,
 				4DEB23532B2F503200948B1A /* SceneDelegate.swift */,
 				4DEB23552B2F503200948B1A /* ViewController.swift */,
+				4DEB23652B2F586700948B1A /* FilmViewController.swift */,
 				4DEB23572B2F503200948B1A /* Main.storyboard */,
 				4DEB235A2B2F503400948B1A /* Assets.xcassets */,
 				4DEB235C2B2F503400948B1A /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			files = (
 				4DEB23562B2F503200948B1A /* ViewController.swift in Sources */,
 				4DEB23522B2F503200948B1A /* AppDelegate.swift in Sources */,
+				4DEB23662B2F586700948B1A /* FilmViewController.swift in Sources */,
 				4DEB23542B2F503200948B1A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
