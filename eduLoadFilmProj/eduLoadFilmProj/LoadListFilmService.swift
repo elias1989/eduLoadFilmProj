@@ -23,11 +23,6 @@ class LoadListFilmService {
                 let decoder = JSONDecoder()
                 let result = try decoder.decode(MoviesResponse.self, from: data)
                 let movies = result.results
-                
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 100, execute: {
-//                                    completion(movies)
-//                                } )
-                
                 completion(movies)
             } catch {
                 print("Error decoding JSON: \(error)")
