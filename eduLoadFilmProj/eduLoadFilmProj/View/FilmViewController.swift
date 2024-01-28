@@ -14,7 +14,6 @@ class FilmViewController: UIViewController {
         setupTableView()
         setupNavigationBar()
         
-        
         movieService.fetchMovies { movies in
             if let movies = movies {
                 self.movies = movies
