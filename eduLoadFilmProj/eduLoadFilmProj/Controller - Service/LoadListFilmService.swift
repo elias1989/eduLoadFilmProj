@@ -6,14 +6,13 @@ class LoadListFilmService {
     
     func fetchMovies(completion: @escaping ([Movie]?) -> Void) {
         let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=1"
-        
+            
             guard let url = URL(string: urlString) else {
                 completion(nil)
                 return
             }
-        
+            
             URLSession.shared.dataTask(with: url) { data, _, error in
-                //response statusCode == 200 check?
                 guard let data = data, error == nil else {
                     completion(nil)
                     return

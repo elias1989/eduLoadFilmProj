@@ -14,10 +14,10 @@ class FilmViewController: UIViewController {
         setupTableView()
         setupNavigationBar()
         
-        //Strong reference overwrited each time viewdidload called. No need for [weak self]
-        movieService.fetchMovies {  movies in
+        
+        movieService.fetchMovies { movies in
             if let movies = movies {
-                self.movies = movies     //если стоит [weak self] тогда нужен self?(опциональный). как это может не найтись, оно объявдено выше
+                self.movies = movies
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
