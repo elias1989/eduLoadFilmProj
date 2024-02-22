@@ -153,7 +153,7 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == movies.count - 1 && !isLoadingNextPage {
-            print("this is the last cell of the current page")
+            print("Last cell of a current page")
             loadNextPage()
         }
     }

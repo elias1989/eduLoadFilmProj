@@ -18,7 +18,7 @@ class LoadListFilmService: UIViewController {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, let httpResponse = response as? HTTPURLResponse, error == nil else {
-                let networkError = NSError(domain: "Network", code: -1, userInfo: [NSLocalizedDescriptionKey: "Error in network request"])
+                let networkError = NSError(domain: "Network", code: -1, userInfo: [NSLocalizedDescriptionKey: "Error in network request "])
                 completion(nil, networkError)
                 return
             }
@@ -38,7 +38,7 @@ class LoadListFilmService: UIViewController {
                 
             } else {
                 print("HTTP Response Error: \(httpResponse.statusCode)")
-                let httpResponseError = NSError(domain: "HTTP", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP Response Error"])
+                let httpResponseError = NSError(domain: "HTTP", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP Response Error: \(httpResponse.statusCode)"])
                 completion(nil, httpResponseError)
             }
             
