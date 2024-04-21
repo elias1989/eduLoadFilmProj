@@ -20,9 +20,9 @@ class FilmViewController: UIViewController {
         super.viewDidLoad()
         
         setupTableView()
+        setupSpinners()
         loadMovies()
         isLoadingFirstTime = false
-        setupSpinners()
         startCenterSpinner()
         
     }
@@ -37,27 +37,29 @@ class FilmViewController: UIViewController {
     
     
     private func loadMovies() {
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            
             self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
+                
                 if let movies = newMovies {
-                    
                     self.movies += movies
+                    
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                         
                     }
+                    
                 } else if let error = error {
                     
-                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    DispatchQueue.main.async {
+                        self.showAlert(title: "Error", message: error.localizedDescription)
+                    }
                     
                 }
+                
+                self.stopCenterSpinner()
+                
             }
-            
-            guard self.isLoadingFirstTime == true else { return self.stopCenterSpinner() }
-            
-        }
+        
+        
     }
     
     
@@ -122,9 +124,7 @@ class FilmViewController: UIViewController {
                 } else if let error = error {
                     
                     self.showAlert(title: "Error", message: error.localizedDescription)
-                    DispatchQueue.main.async {
-                        self.stopBottomSpinner()
-                    }
+                   
                     
                 }
                 
