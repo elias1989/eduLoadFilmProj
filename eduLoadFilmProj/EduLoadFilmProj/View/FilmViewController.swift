@@ -41,6 +41,7 @@ class FilmViewController: UIViewController {
                 
                 if let movies = newMovies {
                     self.movies += movies
+                     
                     
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
