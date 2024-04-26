@@ -1,8 +1,17 @@
 import UIKit
 
-class FilmViewController: UIViewController {
+final class FilmViewController: UIViewController {
     
-    var tableView: UITableView!
+    
+    lazy var tableView: UITableView = {
+        let view = UITableView(frame: view.bounds, style: .plain)
+        view.delegate = self
+        view.dataSource = self
+        view.register(TableViewFilmCell.self,
+                      forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
+        return view
+    }()
+    
     
     var movies: [Movie] = []
     
@@ -42,10 +51,8 @@ class FilmViewController: UIViewController {
                 if let movies = newMovies {
                     self.movies += movies
                      
-                    
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
-                        
                     }
                     
                 } else if let error = error {
@@ -96,10 +103,8 @@ class FilmViewController: UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
         
-        DispatchQueue.main.async {
-            self.present(alert, animated: true, completion: nil)
-        }
     }
     
     func loadNextPage() {
@@ -112,8 +117,6 @@ class FilmViewController: UIViewController {
         
         startBottomSpinner()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            
             self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
                 if let movies = newMovies {
                     self.movies += movies
@@ -124,15 +127,15 @@ class FilmViewController: UIViewController {
                     }
                 } else if let error = error {
                     
-                    self.showAlert(title: "Error", message: error.localizedDescription)
-                   
-                    
+                    DispatchQueue.main.async {
+                        
+                        self.showAlert(title: "Error", message: error.localizedDescription)
+                        
+                    }
                 }
                 
             }
             
-        }
-        
     }
     
 }
