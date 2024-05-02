@@ -20,16 +20,39 @@ final class FilmViewController: UIViewController {
     var isLoadingNextPage: Bool = false
     var currentPage: Int = 1
     
-    var centerSpinner: UIActivityIndicatorView!
+    lazy var centerSpinner: UIActivityIndicatorView = {
+        let centerSpinner = UIActivityIndicatorView(style: .large)
+        centerSpinner.translatesAutoresizingMaskIntoConstraints = false
+        return centerSpinner
+    }()
+        
+    lazy var bottomSpinner: UIActivityIndicatorView = {
+        let bottomSpinner = UIActivityIndicatorView(style: .large)
+        bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
+        return bottomSpinner
+        
+    }()
+    
     var isLoadingFirstTime: Bool = true
     
-    var bottomSpinner: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupTableView()
-        setupSpinners()
+        
+        view.addSubview(centerSpinner)
+        NSLayoutConstraint.activate([
+            centerSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centerSpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        view.addSubview(bottomSpinner)
+        NSLayoutConstraint.activate([
+            bottomSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            bottomSpinner.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30)
+        ])
+
         loadMovies()
         isLoadingFirstTime = false
         startCenterSpinner()
@@ -50,20 +73,22 @@ final class FilmViewController: UIViewController {
                 
                 if let movies = newMovies {
                     self.movies += movies
-                     
+                    
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
+                        self.stopCenterSpinner()
                     }
                     
                 } else if let error = error {
                     
                     DispatchQueue.main.async {
                         self.showAlert(title: "Error", message: error.localizedDescription)
+                        self.stopCenterSpinner()
                     }
                     
                 }
                 
-                self.stopCenterSpinner()
+                
                 
             }
         
@@ -71,15 +96,15 @@ final class FilmViewController: UIViewController {
     }
     
     
-    private func setupSpinners() {
-        centerSpinner = UIActivityIndicatorView(style: .large)
-        centerSpinner.center = view.center
-        view.addSubview(centerSpinner)
-        
-        bottomSpinner = UIActivityIndicatorView(style: .large)
-        bottomSpinner.center = CGPoint(x: view.center.x, y: view.bounds.height - 30)
-        view.addSubview(bottomSpinner)
-    }
+//    private func setupSpinners() {
+//        centerSpinner = UIActivityIndicatorView(style: .large)
+//        centerSpinner.center = view.center
+//        view.addSubview(centerSpinner)
+//        
+//        bottomSpinner = UIActivityIndicatorView(style: .large)
+//        bottomSpinner.center = CGPoint(x: view.center.x, y: view.bounds.height - 30)
+//        view.addSubview(bottomSpinner)
+//    }
     
     
     private func startCenterSpinner() {
