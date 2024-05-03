@@ -2,33 +2,31 @@ import UIKit
 
 final class FilmViewController: UIViewController {
     
-    
     lazy var tableView: UITableView = {
         let view = UITableView(frame: view.bounds, style: .plain)
         view.delegate = self
         view.dataSource = self
-        view.register(TableViewFilmCell.self,
-                      forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
+        view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
         return view
     }()
     
-    
     var movies: [Movie] = []
     
-    let moviewService: LoadListFilmServiceProtocol
-    init(movieService: LoadListFilmServiceProtocol) {
-           self.movieService = movieService
-           super.init(nibName: nil, bundle: nil)
-       }
-       
-       required init?(coder: NSCoder) {
-           fatalError("init(coder:) has not been implemented")
-       }
+    let movieService = LoadListFilmService()
+    //let moviewService: LoadListFilmServiceProtocol
+//    init(movieService: LoadListFilmServiceProtocol) {
+//        self.movieService = movieService
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     //let movieService = LoadListFilmService()
     
     var isLoadingNextPage: Bool = false
     var currentPage: Int = 1
     
+    //Center spinner UI showing when loading function delays
     lazy var centerSpinner: UIActivityIndicatorView = {
         let centerSpinner = UIActivityIndicatorView(style: .large)
         centerSpinner.translatesAutoresizingMaskIntoConstraints = false
@@ -36,13 +34,12 @@ final class FilmViewController: UIViewController {
     }()
     var isLoadingFirstTime: Bool = true
         
+    //Center spinner UI showing when loading function delays
     lazy var bottomSpinner: UIActivityIndicatorView = {
         let bottomSpinner = UIActivityIndicatorView(style: .large)
         bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
         return bottomSpinner
     }()
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,11 +57,9 @@ final class FilmViewController: UIViewController {
             bottomSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             bottomSpinner.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30)
         ])
-
+        
         loadMovies()
         isLoadingFirstTime = false
-        
-        
     }
     
     private func setupTableView() {
@@ -75,45 +70,87 @@ final class FilmViewController: UIViewController {
         view.addSubview(tableView)
     }
     
-    
     private func loadMovies() {
-            self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
-                
-                if let movies = newMovies {
-                    self.movies += movies
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.stopCenterSpinner()
-                    }
-                    
-                } else if let error = error {
-                    
-                    DispatchQueue.main.async {
-                        self.showAlert(title: "Error", message: error.localizedDescription)
-                        self.stopCenterSpinner()
-                    }
-                    
+        startCenterSpinner()
+        self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
+            if let movies = newMovies {
+                self.movies += movies
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.stopCenterSpinner()
                 }
-                
-                
-                
+            } else if let error = error {
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.stopCenterSpinner()
+                }
             }
+
+        }
+
+    }
+    
+    private func loadNextPage() {
+        guard !isLoadingNextPage else {
+            return
+        }
         
+        isLoadingNextPage = true
+        currentPage += 1
+        
+        startBottomSpinner()
+        self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
+            if let movies = newMovies {
+                self.movies += movies
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.stopBottomSpinner()
+                    self.isLoadingNextPage = false
+                }
+            } else if let error = error {
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                }
+            }
+            
+        }
         
     }
     
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(okAction)
+        self.present(alert, animated: true, completion: nil)
+    }
     
-//    private func setupSpinners() {
-//        centerSpinner = UIActivityIndicatorView(style: .large)
-//        centerSpinner.center = view.center
-//        view.addSubview(centerSpinner)
-//        
-//        bottomSpinner = UIActivityIndicatorView(style: .large)
-//        bottomSpinner.center = CGPoint(x: view.center.x, y: view.bounds.height - 30)
-//        view.addSubview(bottomSpinner)
-//    }
+}
+
+
+extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return movies.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewFilmCell.reuseIdentifier, for: indexPath) as! TableViewFilmCell
+        let movie = movies[indexPath.row]
+        cell.configure(with: movie)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == movies.count - 1 && !isLoadingNextPage {
+            print("Last cell of a current page")
+            loadNextPage()
+        }
+    }
+    
+}
+
+
+extension FilmViewController {
     
     private func startCenterSpinner() {
         centerSpinner.startAnimating()
@@ -131,70 +168,16 @@ final class FilmViewController: UIViewController {
         bottomSpinner.stopAnimating()
     }
     
-    
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-        alert.addAction(okAction)
-        self.present(alert, animated: true, completion: nil)
-        
-    }
-    
-    private func loadNextPage() {
-        guard !isLoadingNextPage else {
-            return
-        }
-        
-        isLoadingNextPage = true
-        currentPage += 1
-        
-        startBottomSpinner()
-        
-            self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
-                if let movies = newMovies {
-                    self.movies += movies
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                        self.stopBottomSpinner()
-                        self.isLoadingNextPage = false
-                    }
-                } else if let error = error {
-                    
-                    DispatchQueue.main.async {
-                        
-                        self.showAlert(title: "Error", message: error.localizedDescription)
-                        
-                    }
-                }
-                
-            }
-            
-    }
-    
 }
 
 
-extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
+//    private func setupSpinners() {
+//        centerSpinner = UIActivityIndicatorView(style: .large)
+//        centerSpinner.center = view.center
+//        view.addSubview(centerSpinner)
+//
+//        bottomSpinner = UIActivityIndicatorView(style: .large)
+//        bottomSpinner.center = CGPoint(x: view.center.x, y: view.bounds.height - 30)
+//        view.addSubview(bottomSpinner)
+//    }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewFilmCell.reuseIdentifier, for: indexPath) as! TableViewFilmCell
-        let movie = movies[indexPath.row]
-        cell.configure(with: movie)
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == movies.count - 1 && !isLoadingNextPage {
-            print("Last cell of a current page")
-            loadNextPage()
-        }
-    }
-    
-}
-

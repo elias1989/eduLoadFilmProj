@@ -5,11 +5,8 @@ class LoadListFilmService: UIViewController {
     
     private let apiKey = "feacf88cd81377f6cfa24e512f1c61de"
     
-    
     func fetchMovies(page: Int, completion: @escaping ([Movie]?, Error?) -> Void) {
-        
         let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=\(page)"
-        
         guard let url = URL(string: urlString) else {
             let urlError = NSError(domain: "URL", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
             completion(nil, urlError)
