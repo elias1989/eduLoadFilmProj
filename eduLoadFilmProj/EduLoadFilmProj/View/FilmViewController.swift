@@ -15,7 +15,16 @@ final class FilmViewController: UIViewController {
     
     var movies: [Movie] = []
     
-    let movieService = LoadListFilmService()
+    let moviewService: LoadListFilmServiceProtocol
+    init(movieService: LoadListFilmServiceProtocol) {
+           self.movieService = movieService
+           super.init(nibName: nil, bundle: nil)
+       }
+       
+       required init?(coder: NSCoder) {
+           fatalError("init(coder:) has not been implemented")
+       }
+    //let movieService = LoadListFilmService()
     
     var isLoadingNextPage: Bool = false
     var currentPage: Int = 1
@@ -25,15 +34,14 @@ final class FilmViewController: UIViewController {
         centerSpinner.translatesAutoresizingMaskIntoConstraints = false
         return centerSpinner
     }()
+    var isLoadingFirstTime: Bool = true
         
     lazy var bottomSpinner: UIActivityIndicatorView = {
         let bottomSpinner = UIActivityIndicatorView(style: .large)
         bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
         return bottomSpinner
-        
     }()
     
-    var isLoadingFirstTime: Bool = true
     
     
     override func viewDidLoad() {
@@ -55,7 +63,7 @@ final class FilmViewController: UIViewController {
 
         loadMovies()
         isLoadingFirstTime = false
-        startCenterSpinner()
+        
         
     }
     
@@ -132,7 +140,7 @@ final class FilmViewController: UIViewController {
         
     }
     
-    func loadNextPage() {
+    private func loadNextPage() {
         guard !isLoadingNextPage else {
             return
         }
@@ -145,6 +153,7 @@ final class FilmViewController: UIViewController {
             self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
                 if let movies = newMovies {
                     self.movies += movies
+                    
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                         self.stopBottomSpinner()
