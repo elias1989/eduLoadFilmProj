@@ -13,17 +13,8 @@ final class FilmViewController: UIViewController {
     var movies: [Movie] = []
     
     let movieService = LoadListFilmService()
-    //let moviewService: LoadListFilmServiceProtocol
-//    init(movieService: LoadListFilmServiceProtocol) {
-//        self.movieService = movieService
-//        super.init(nibName: nil, bundle: nil)
-//    }
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-    //let movieService = LoadListFilmService()
     
-    var isLoadingNextPage: Bool = false
+    //var isLoadingNextPage: Bool = false
     var currentPage: Int = 1
     
     //Center spinner UI showing when loading function delays
@@ -72,45 +63,50 @@ final class FilmViewController: UIViewController {
     
     private func loadMovies() {
         startCenterSpinner()
-        self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
-            if let movies = newMovies {
+        self.movieService.fetchMovies(page: self.currentPage) { result in
+            switch result {
+            case .success(let movies):
                 self.movies += movies
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                     self.stopCenterSpinner()
                 }
-            } else if let error = error {
+            case .failure(let error):
                 DispatchQueue.main.async {
                     self.showAlert(title: "Error", message: error.localizedDescription)
                     self.stopCenterSpinner()
                 }
             }
-
+            
         }
 
     }
     
     private func loadNextPage() {
-        guard !isLoadingNextPage else {
-            return
-        }
+//        guard !isLoadingNextPage else {
+//            return
+//        }
         
-        isLoadingNextPage = true
+       // isLoadingNextPage = true
         currentPage += 1
         
         startBottomSpinner()
-        self.movieService.fetchMovies(page: self.currentPage) { (newMovies, error) in
-            if let movies = newMovies {
+        self.movieService.fetchMovies(page: self.currentPage) { result in
+            switch result {
+            case .success(let movies):
                 self.movies += movies
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                     self.stopBottomSpinner()
-                    self.isLoadingNextPage = false
+                    //self.isLoadingNextPage = false
                 }
-            } else if let error = error {
+            case .failure(let error):
                 DispatchQueue.main.async {
                     self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.stopBottomSpinner()
+                    //self.isLoadingNextPage = false
                 }
+                
             }
             
         }
@@ -141,7 +137,8 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == movies.count - 1 && !isLoadingNextPage {
+        if indexPath.row == movies.count - 1  {
+           //after if statement --> && !isLoadingNextPage
             print("Last cell of a current page")
             loadNextPage()
         }
@@ -181,3 +178,30 @@ extension FilmViewController {
 //        view.addSubview(bottomSpinner)
 //    }
     
+
+
+//let moviewService: LoadListFilmServiceProtocol
+//    init(movieService: LoadListFilmServiceProtocol) {
+//        self.movieService = movieService
+//        super.init(nibName: nil, bundle: nil)
+//    }
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//let movieService = LoadListFilmService()
+
+
+
+
+//            if let movies = newMovies {
+//                self.movies += movies
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadData()
+//                    self.stopCenterSpinner()
+//                }
+//            } else if let error = error {
+//                DispatchQueue.main.async {
+//                    self.showAlert(title: "Error", message: error.localizedDescription)
+//                    self.stopCenterSpinner()
+//                }
+//            }
