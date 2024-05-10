@@ -1,7 +1,6 @@
 import UIKit
 
 class TableViewFilmCell: UITableViewCell {
-
     static let reuseIdentifier = "MovieCell"
 
     private let titleLabel: UILabel = {
@@ -9,13 +8,11 @@ class TableViewFilmCell: UITableViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 20)
         return label
     }()
-
     private let overviewLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         return label
     }()
-
     private let releaseDateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.italicSystemFont(ofSize: 14)
@@ -26,18 +23,18 @@ class TableViewFilmCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
     }
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     private func setupUI() {
         contentView.addSubview(titleLabel)
-        contentView.addSubview(overviewLabel)
-        contentView.addSubview(releaseDateLabel)
-
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(overviewLabel)
         overviewLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(releaseDateLabel)
         releaseDateLabel.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -54,11 +51,14 @@ class TableViewFilmCell: UITableViewCell {
             releaseDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             releaseDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
         ])
+        
     }
 
     func configure(with movie: Movie) {
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
+        
     }
+    
 }

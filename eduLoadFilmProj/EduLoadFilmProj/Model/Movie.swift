@@ -1,8 +1,6 @@
 import Foundation
 
-
 struct Movie: Codable {
-    
     let title: String
     let overview: String
     let releaseDate: String

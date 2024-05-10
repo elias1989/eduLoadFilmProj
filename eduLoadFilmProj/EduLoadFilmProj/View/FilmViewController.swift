@@ -1,31 +1,37 @@
 import UIKit
 
 final class FilmViewController: UIViewController {
-    
-    lazy var tableView: UITableView = {
-        let view = UITableView(frame: view.bounds, style: .plain)
-        view.delegate = self
-        view.dataSource = self
-        view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
-        return view
-    }()
-    
-    var movies: [Movie] = []
-    
+    //Assignment done to get acces to service part
     let movieService = LoadListFilmService()
     
-    //var isLoadingNextPage: Bool = false
+    //The array of movies used while loading tableView
+    var movies: [Movie] = []
+    
+    //Page number is used both for counting purposes and for instructing the API link about which movie page is currently required for loading.
     var currentPage: Int = 1
     
-    //Center spinner UI showing when loading function delays
+    //User interface tableView initialises at first request
+//    lazy var tableView: UITableView = {
+//        //Interface configuration for table
+//        let view = UITableView(frame: view.bounds, style: .plain)
+//        
+//        //setting delegate and data source for table view
+//        view.delegate = self
+//        view.dataSource = self
+//        
+//        //Registering cell
+//        view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
+//        return view
+//    }()
+    
+    //Center spinner UI showing when page is loading and stops when loaded
     lazy var centerSpinner: UIActivityIndicatorView = {
         let centerSpinner = UIActivityIndicatorView(style: .large)
         centerSpinner.translatesAutoresizingMaskIntoConstraints = false
         return centerSpinner
     }()
-    var isLoadingFirstTime: Bool = true
-        
-    //Center spinner UI showing when loading function delays
+    
+    //Bottom spinner UI showing when page is loading  and stops when loaded
     lazy var bottomSpinner: UIActivityIndicatorView = {
         let bottomSpinner = UIActivityIndicatorView(style: .large)
         bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
@@ -50,67 +56,16 @@ final class FilmViewController: UIViewController {
         ])
         
         loadMovies()
-        isLoadingFirstTime = false
+        
     }
     
+    //setting up table view
     private func setupTableView() {
         tableView = UITableView(frame: view.bounds, style: .plain)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
         view.addSubview(tableView)
-    }
-    
-    private func loadMovies() {
-        startCenterSpinner()
-        self.movieService.fetchMovies(page: self.currentPage) { result in
-            switch result {
-            case .success(let movies):
-                self.movies += movies
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.stopCenterSpinner()
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.showAlert(title: "Error", message: error.localizedDescription)
-                    self.stopCenterSpinner()
-                }
-            }
-            
-        }
-
-    }
-    
-    private func loadNextPage() {
-//        guard !isLoadingNextPage else {
-//            return
-//        }
-        
-       // isLoadingNextPage = true
-        currentPage += 1
-        
-        startBottomSpinner()
-        self.movieService.fetchMovies(page: self.currentPage) { result in
-            switch result {
-            case .success(let movies):
-                self.movies += movies
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.stopBottomSpinner()
-                    //self.isLoadingNextPage = false
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.showAlert(title: "Error", message: error.localizedDescription)
-                    self.stopBottomSpinner()
-                    //self.isLoadingNextPage = false
-                }
-                
-            }
-            
-        }
-        
     }
     
     private func showAlert(title: String, message: String) {
@@ -122,9 +77,7 @@ final class FilmViewController: UIViewController {
     
 }
 
-
 extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
     }
@@ -138,7 +91,6 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == movies.count - 1  {
-           //after if statement --> && !isLoadingNextPage
             print("Last cell of a current page")
             loadNextPage()
         }
@@ -146,9 +98,7 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-
 extension FilmViewController {
-    
     private func startCenterSpinner() {
         centerSpinner.startAnimating()
     }
@@ -167,41 +117,47 @@ extension FilmViewController {
     
 }
 
-
-//    private func setupSpinners() {
-//        centerSpinner = UIActivityIndicatorView(style: .large)
-//        centerSpinner.center = view.center
-//        view.addSubview(centerSpinner)
-//
-//        bottomSpinner = UIActivityIndicatorView(style: .large)
-//        bottomSpinner.center = CGPoint(x: view.center.x, y: view.bounds.height - 30)
-//        view.addSubview(bottomSpinner)
-//    }
+extension FilmViewController {
+    private func loadMovies() {
+        startCenterSpinner()
+        self.movieService.fetchMovies(page: self.currentPage) { result in
+            switch result {
+            case .success(let movies):
+                self.movies += movies
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.stopCenterSpinner()
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.stopCenterSpinner()
+                }
+            }
+        }
+        
+    }
     
-
-
-//let moviewService: LoadListFilmServiceProtocol
-//    init(movieService: LoadListFilmServiceProtocol) {
-//        self.movieService = movieService
-//        super.init(nibName: nil, bundle: nil)
-//    }
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//let movieService = LoadListFilmService()
-
-
-
-
-//            if let movies = newMovies {
-//                self.movies += movies
-//                DispatchQueue.main.async {
-//                    self.tableView.reloadData()
-//                    self.stopCenterSpinner()
-//                }
-//            } else if let error = error {
-//                DispatchQueue.main.async {
-//                    self.showAlert(title: "Error", message: error.localizedDescription)
-//                    self.stopCenterSpinner()
-//                }
-//            }
+    private func loadNextPage() {
+        currentPage += 1
+        
+        startBottomSpinner()
+        self.movieService.fetchMovies(page: self.currentPage) { result in
+            switch result {
+            case .success(let movies):
+                self.movies += movies
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    self.stopBottomSpinner()
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.stopBottomSpinner()
+                }
+            }
+        }
+        
+    }
+    
+}

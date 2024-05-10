@@ -1,17 +1,12 @@
 import Foundation
 import UIKit
 
-
 protocol LoadListFilmProtocol {
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void)
+    
 }
 
-
 final class LoadListFilmService: LoadListFilmProtocol {
-
-
-    
-  
     private let apiKey = "feacf88cd81377f6cfa24e512f1c61de"
     
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void) {
@@ -28,7 +23,7 @@ final class LoadListFilmService: LoadListFilmProtocol {
                 completion(.failure(networkError))
                 return
             }
-                        
+            
             if 200 ..< 300 ~= httpResponse.statusCode {
                 do  {
                     let decoder = JSONDecoder()
@@ -40,17 +35,13 @@ final class LoadListFilmService: LoadListFilmProtocol {
                     let decodingError = NSError(domain: "Decoding", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Error decoding JSON: \(error)"])
                     completion(.failure(decodingError))
                 }
-                
             } else {
                 print("HTTP Response Error: \(httpResponse.statusCode)")
                 let httpResponseError = NSError(domain: "HTTP", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP Response Error: \(httpResponse.statusCode)"])
                 completion(.failure(httpResponseError))
             }
-            
         }.resume()
         
-        
     }
-    
     
 }
