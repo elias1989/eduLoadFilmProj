@@ -1,8 +1,10 @@
 import UIKit
 
 class TableViewFilmCell: UITableViewCell {
+    //identification mark for cell
     static let reuseIdentifier = "MovieCell"
 
+    //creating labels for cell with immediate initiailization
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 20)
@@ -18,7 +20,8 @@ class TableViewFilmCell: UITableViewCell {
         label.font = UIFont.italicSystemFont(ofSize: 14)
         return label
     }()
-
+    
+    //creating initializers for custom table view cell.
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()

@@ -1,73 +1,69 @@
 import UIKit
 
+//UI related Controller + business logic
 final class FilmViewController: UIViewController {
-    //Assignment done to get acces to service part
+    //Get acces to service part to use it for page loading purpose.
     let movieService = LoadListFilmService()
     
-    //The array of movies used while loading tableView
+    //The array of movies used to arrange the sequence of loaded movies.
     var movies: [Movie] = []
     
     //Page number is used both for counting purposes and for instructing the API link about which movie page is currently required for loading.
     var currentPage: Int = 1
     
-    //User interface tableView initialises at first request
-//    lazy var tableView: UITableView = {
-//        //Interface configuration for table
-//        let view = UITableView(frame: view.bounds, style: .plain)
-//        
-//        //setting delegate and data source for table view
-//        view.delegate = self
-//        view.dataSource = self
-//        
-//        //Registering cell
-//        view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
-//        return view
-//    }()
+    //UI table View initialized at first request
+    lazy var tableView: UITableView = {
+        //Interface configuration for table
+        let view = UITableView(frame: view.bounds, style: .plain)
+        
+        //Assigning FilmViewController as a delegate and datasource for the view.
+        view.delegate = self
+        view.dataSource = self
+        
+        //Registering cell
+        view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
+        
+        //shows tableView on the screen
+        return view
+    }()
     
     //Center spinner UI showing when page is loading and stops when loaded
     lazy var centerSpinner: UIActivityIndicatorView = {
         let centerSpinner = UIActivityIndicatorView(style: .large)
         centerSpinner.translatesAutoresizingMaskIntoConstraints = false
-        return centerSpinner
-    }()
-    
-    //Bottom spinner UI showing when page is loading  and stops when loaded
-    lazy var bottomSpinner: UIActivityIndicatorView = {
-        let bottomSpinner = UIActivityIndicatorView(style: .large)
-        bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
-        return bottomSpinner
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        setupTableView()
-        
         view.addSubview(centerSpinner)
         NSLayoutConstraint.activate([
             centerSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             centerSpinner.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-        
+        return centerSpinner
+    }()
+    
+    //Bottom spinner UI showing when page is loading and stops when loaded
+    lazy var bottomSpinner: UIActivityIndicatorView = {
+        let bottomSpinner = UIActivityIndicatorView(style: .large)
+        bottomSpinner.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bottomSpinner)
         NSLayoutConstraint.activate([
             bottomSpinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             bottomSpinner.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30)
         ])
+        return bottomSpinner
+    }()
+    
+    //First actions in lifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
+        //adding table view with further initialization.
+        view.addSubview(tableView)
+        
+        //loading of the first page
         loadMovies()
         
     }
     
-    //setting up table view
-    private func setupTableView() {
-        tableView = UITableView(frame: view.bounds, style: .plain)
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
-        view.addSubview(tableView)
-    }
-    
+    //Alert in case errors. Shows the type of error depending on context.
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -77,6 +73,7 @@ final class FilmViewController: UIViewController {
     
 }
 
+//table view UI. amount of movies on the screen, configuration of each cell, detecting the last cell on the scren to load the next page.
 extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
@@ -98,6 +95,7 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
+// Spinners Start/Stop animation functions depending on the context.
 extension FilmViewController {
     private func startCenterSpinner() {
         centerSpinner.startAnimating()
@@ -117,17 +115,25 @@ extension FilmViewController {
     
 }
 
+//Loading "first page" and "next page" methods
 extension FilmViewController {
     private func loadMovies() {
+        //Star animation
         startCenterSpinner()
+        
+        //Referring to Service part to load the first page of the moview array.
         self.movieService.fetchMovies(page: self.currentPage) { result in
             switch result {
+                
+            //In case of succes movies added to array. Table UI with movies refreshes with new data. Spinner Disappears.
             case .success(let movies):
                 self.movies += movies
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                     self.stopCenterSpinner()
                 }
+                
+            //In case of failure refering to alert to show the Erorr type depending on the context. Spinner disappears.
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.showAlert(title: "Error", message: error.localizedDescription)
@@ -138,6 +144,7 @@ extension FilmViewController {
         
     }
     
+    //Loading the next page. Same idea as in previous LoadMovies() method, but with current page number.
     private func loadNextPage() {
         currentPage += 1
         
