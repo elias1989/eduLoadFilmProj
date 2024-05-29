@@ -20,6 +20,15 @@ class TableViewFilmCell: UITableViewCell {
         label.font = UIFont.italicSystemFont(ofSize: 14)
         return label
     }()
+    private let posterImageView: UIImageView = {
+            let posterImageView = UIImageView()
+            posterImageView.contentMode = .scaleAspectFill
+            posterImageView.clipsToBounds = true
+            posterImageView.layer.cornerRadius = 8
+            posterImageView.layer.borderWidth = 1
+            posterImageView.layer.borderColor = UIColor.lightGray.cgColor
+            return posterImageView
+        }()
     
     //creating initializers for custom table view cell.
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -40,19 +49,30 @@ class TableViewFilmCell: UITableViewCell {
         contentView.addSubview(releaseDateLabel)
         releaseDateLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        contentView.addSubview(posterImageView)
+        posterImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
             overviewLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            overviewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            overviewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
             overviewLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
             releaseDateLabel.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: 8),
-            releaseDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            releaseDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
             releaseDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            releaseDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+            releaseDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            
+            posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            posterImageView.widthAnchor.constraint(equalToConstant: 50),
+            posterImageView.heightAnchor.constraint(equalToConstant: 75),
+            
         ])
         
     }
@@ -61,6 +81,7 @@ class TableViewFilmCell: UITableViewCell {
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
+        posterImageView.image = movie.posterImageView
         
     }
     
