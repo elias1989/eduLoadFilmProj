@@ -2,8 +2,22 @@ import UIKit
 
 //UI related Controller + business logic
 final class FilmViewController: UIViewController {
-    //Get acces to service part to use it for page loading purpose.
-    let movieService = LoadListFilmService()
+    
+    //Protocol usage by movieService
+    let movieService: LoadListFilmProtocol
+    
+    
+    init(movieService: LoadListFilmProtocol, movies: [Movie] = [], currentPage: Int = 1) {
+        self.movieService = movieService
+        self.movies = movies
+        self.currentPage = currentPage
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     //The array of movies used to arrange the sequence of loaded movies.
     var movies: [Movie] = []

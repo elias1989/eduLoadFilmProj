@@ -82,7 +82,7 @@ class TableViewFilmCell: UITableViewCell {
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
         
-        posterImageView.image = movie.
+        //posterImageView.image = movie.
         
       
     }

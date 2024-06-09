@@ -13,7 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         //creating root controller by code.
-        window.rootViewController = FilmViewController()
+        let serviceLoaderFilms = LoadListFilmService()
+        window.rootViewController = FilmViewController(movieService: serviceLoaderFilms)
         
         //make window visible
         window.makeKeyAndVisible()
