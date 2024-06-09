@@ -21,14 +21,14 @@ class TableViewFilmCell: UITableViewCell {
         return label
     }()
     private let posterImageView: UIImageView = {
-            let posterImageView = UIImageView()
-            posterImageView.contentMode = .scaleAspectFill
-            posterImageView.clipsToBounds = true
-            posterImageView.layer.cornerRadius = 8
-            posterImageView.layer.borderWidth = 1
-            posterImageView.layer.borderColor = UIColor.lightGray.cgColor
-            return posterImageView
-        }()
+        let posterImageView = UIImageView()
+        posterImageView.contentMode = .scaleAspectFill
+        posterImageView.clipsToBounds = true
+        posterImageView.layer.cornerRadius = 8
+        posterImageView.layer.borderWidth = 1
+        posterImageView.layer.borderColor = UIColor.lightGray.cgColor
+        return posterImageView
+    }()
     
     //creating initializers for custom table view cell.
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -81,8 +81,33 @@ class TableViewFilmCell: UITableViewCell {
         titleLabel.text = movie.title
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
-        posterImageView.image = movie.posterImageView
         
+        posterImageView.image = movie.
+        
+      
     }
     
 }
+
+
+
+//if let url = movie.posterImageURL {
+//          fetchImage(from: url) { [weak self] image in
+//              DispatchQueue.main.async {
+//                  self?.posterImageView.image = image
+//              }
+//          }
+//      } else {
+//          posterImageView.image = nil // Set a placeholder image if URL is invalid
+//      }
+//
+// func fetchImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
+//    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+//        guard let data = data, error == nil else {
+//            completion(nil)
+//            return
+//        }
+//        completion(UIImage(data: data))
+//    }
+//    task.resume()
+//}
