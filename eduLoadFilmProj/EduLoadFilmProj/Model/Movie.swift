@@ -6,7 +6,7 @@ struct Movie: Codable {
     let title: String
     let overview: String
     let releaseDate: String
-    let posterImagePath: String //URL все таки
+    let posterImagePath: String 
     
     //keys needed for JSON code.
     enum CodingKeys: String, CodingKey {
@@ -17,9 +17,10 @@ struct Movie: Codable {
     }
  
     var posterImageURL: URL? {
-            return URL(string: posterImagePath)
+            return URL(string: "https://image.tmdb.org/t/p/w500\(posterImagePath)")
         }
     
     
+   // let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=\(page)"
 }
 

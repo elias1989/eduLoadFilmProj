@@ -17,7 +17,7 @@ final class LoadListFilmService: LoadListFilmProtocol {
         //API link
         let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=\(page)"
         
-        //check if url API can be found.
+        //Check if url API can be found.
         guard let url = URL(string: urlString) else {
             let urlError = NSError(domain: "URL", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
             completion(.failure(urlError))

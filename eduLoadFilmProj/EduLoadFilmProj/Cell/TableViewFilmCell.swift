@@ -1,9 +1,11 @@
 import UIKit
+import SDWebImage
 
 class TableViewFilmCell: UITableViewCell {
+    
     //identification mark for cell
     static let reuseIdentifier = "MovieCell"
-
+    
     //creating labels for cell with immediate initiailization
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -39,7 +41,18 @@ class TableViewFilmCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    //Location configuration constants for titleLabel, overviewLabel, posterImageView
+    let topPadding: CGFloat = 8.0
+    let leadingPadding: CGFloat = 70.0
+    let trailingPadding: CGFloat = -16.0
+    let bottomPadding: CGFloat = -8.0
+    let posterImageTopPadding: CGFloat = 8.0
+    let posterImageLeadingPadding: CGFloat = 8.0
+    let posterImageWidth: CGFloat = 50.0
+    let posterImageHeight: CGFloat = 75.0
+    
     private func setupUI() {
+        //User interface setup for various objects
         contentView.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -52,27 +65,24 @@ class TableViewFilmCell: UITableViewCell {
         contentView.addSubview(posterImageView)
         posterImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        
-        
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: topPadding),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: trailingPadding),
 
-            overviewLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            overviewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
-            overviewLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            overviewLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: topPadding),
+            overviewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+            overviewLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: trailingPadding),
 
-            releaseDateLabel.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: 8),
-            releaseDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 70),
-            releaseDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            releaseDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            releaseDateLabel.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: topPadding),
+            releaseDateLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: leadingPadding),
+            releaseDateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: trailingPadding),
+            releaseDateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: bottomPadding),
             
-            posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            posterImageView.widthAnchor.constraint(equalToConstant: 50),
-            posterImageView.heightAnchor.constraint(equalToConstant: 75),
-            
+            posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: posterImageTopPadding),
+            posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: posterImageLeadingPadding),
+            posterImageView.widthAnchor.constraint(equalToConstant: posterImageWidth),
+            posterImageView.heightAnchor.constraint(equalToConstant: posterImageHeight),
         ])
         
     }
@@ -82,7 +92,9 @@ class TableViewFilmCell: UITableViewCell {
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
         
-        //posterImageView.image = movie.
+        if let posterImagePath = URL(string: movie.posterImagePath) {
+                   posterImageView.sd_setImage(with: posterImagePath, placeholderImage: UIImage(named: "poster_path"))
+               }
         
       
     }
@@ -90,24 +102,3 @@ class TableViewFilmCell: UITableViewCell {
 }
 
 
-
-//if let url = movie.posterImageURL {
-//          fetchImage(from: url) { [weak self] image in
-//              DispatchQueue.main.async {
-//                  self?.posterImageView.image = image
-//              }
-//          }
-//      } else {
-//          posterImageView.image = nil // Set a placeholder image if URL is invalid
-//      }
-//
-// func fetchImage(from url: URL, completion: @escaping (UIImage?) -> Void) {
-//    let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//        guard let data = data, error == nil else {
-//            completion(nil)
-//            return
-//        }
-//        completion(UIImage(data: data))
-//    }
-//    task.resume()
-//}

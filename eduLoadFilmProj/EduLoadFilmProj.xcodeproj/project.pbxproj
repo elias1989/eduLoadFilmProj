@@ -11,6 +11,8 @@
 		4D1A69BF2B37034800F28C12 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A69BE2B37034800F28C12 /* Movie.swift */; };
 		4D1A69C12B37040900F28C12 /* MoviesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A69C02B37040900F28C12 /* MoviesResponse.swift */; };
 		4D1A69C52B3831ED00F28C12 /* TableViewFilmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A69C42B3831ED00F28C12 /* TableViewFilmCell.swift */; };
+		4D2020912C258F4700F0B5CA /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 4D2020902C258F4700F0B5CA /* SDWebImage */; };
+		4D2020932C258F4700F0B5CA /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4D2020922C258F4700F0B5CA /* SDWebImageMapKit */; };
 		4DEB23522B2F503200948B1A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEB23512B2F503200948B1A /* AppDelegate.swift */; };
 		4DEB23542B2F503200948B1A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DEB23532B2F503200948B1A /* SceneDelegate.swift */; };
 		4DEB235B2B2F503400948B1A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DEB235A2B2F503400948B1A /* Assets.xcassets */; };
@@ -37,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D2020932C258F4700F0B5CA /* SDWebImageMapKit in Frameworks */,
+				4D2020912C258F4700F0B5CA /* SDWebImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +136,10 @@
 			dependencies = (
 			);
 			name = EduLoadFilmProj;
+			packageProductDependencies = (
+				4D2020902C258F4700F0B5CA /* SDWebImage */,
+				4D2020922C258F4700F0B5CA /* SDWebImageMapKit */,
+			);
 			productName = eduLoadFilmProj;
 			productReference = 4DEB234E2B2F503200948B1A /* EduLoadFilmProj.app */;
 			productType = "com.apple.product-type.application";
@@ -160,6 +168,9 @@
 				Base,
 			);
 			mainGroup = 4DEB23452B2F503200948B1A;
+			packageReferences = (
+				4D20208F2C258F4700F0B5CA /* XCRemoteSwiftPackageReference "SDWebImage" */,
+			);
 			productRefGroup = 4DEB234F2B2F503200948B1A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -400,6 +411,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4D20208F2C258F4700F0B5CA /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4D2020902C258F4700F0B5CA /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D20208F2C258F4700F0B5CA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		4D2020922C258F4700F0B5CA /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D20208F2C258F4700F0B5CA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4DEB23462B2F503200948B1A /* Project object */;
 }

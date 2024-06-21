@@ -6,7 +6,6 @@ final class FilmViewController: UIViewController {
     //Protocol usage by movieService
     let movieService: LoadListFilmProtocol
     
-    
     init(movieService: LoadListFilmProtocol, movies: [Movie] = [], currentPage: Int = 1) {
         self.movieService = movieService
         self.movies = movies
@@ -17,7 +16,6 @@ final class FilmViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     //The array of movies used to arrange the sequence of loaded movies.
     var movies: [Movie] = []
@@ -65,14 +63,15 @@ final class FilmViewController: UIViewController {
         return bottomSpinner
     }()
     
+    
     //First actions in lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //adding table view with further initialization.
+        //Adding table view with further initialization.
         view.addSubview(tableView)
         
-        //loading of the first page
+        //Loading movies
         loadMovies()
         
     }
@@ -85,9 +84,14 @@ final class FilmViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    //Stop center OR bottom spinner dependind on the page.
+    private func stopSpinner() {
+        if currentPage == 1 { stopCenterSpinner() } else { stopBottomSpinner() }
+    }
+
 }
 
-//table view UI. amount of movies on the screen, configuration of each cell, detecting the last cell on the scren to load the next page.
+//Table view UI. amount of movies on the screen, configuration of each cell, detecting the last cell on the scren to load the next page.
 extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
@@ -103,7 +107,7 @@ extension FilmViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == movies.count - 1  {
             print("Last cell of a current page")
-            loadNextPage()
+            loadMovies()
         }
     }
     
@@ -132,53 +136,25 @@ extension FilmViewController {
 //Loading "first page" and "next page" methods
 extension FilmViewController {
     private func loadMovies() {
-        //Star animation
-        startCenterSpinner()
-        
-        //Referring to Service part to load the first page of the moview array.
-        self.movieService.fetchMovies(page: self.currentPage) { result in
-            switch result {
-                
-            //In case of succes movies added to array. Table UI with movies refreshes with new data. Spinner Disappears.
-            case .success(let movies):
-                self.movies += movies
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                    self.stopCenterSpinner()
-                }
-                
-            //In case of failure refering to alert to show the Erorr type depending on the context. Spinner disappears.
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.showAlert(title: "Error", message: error.localizedDescription)
-                    self.stopCenterSpinner()
-                }
-            }
-        }
-        
-    }
-    
-    //Loading the next page. Same idea as in previous LoadMovies() method, but with current page number.
-    private func loadNextPage() {
         currentPage += 1
-        
-        startBottomSpinner()
-        self.movieService.fetchMovies(page: self.currentPage) { result in
+        if currentPage == 1 { startCenterSpinner() } else { startBottomSpinner() }
+        movieService.fetchMovies(page: currentPage) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let movies):
                 self.movies += movies
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
-                    self.stopBottomSpinner()
+                    self.stopSpinner()
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
                     self.showAlert(title: "Error", message: error.localizedDescription)
-                    self.stopBottomSpinner()
+                    self.stopSpinner()
                 }
             }
         }
-        
     }
     
 }
+
