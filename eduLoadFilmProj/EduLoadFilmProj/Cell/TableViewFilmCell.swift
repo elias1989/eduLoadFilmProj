@@ -92,9 +92,23 @@ class TableViewFilmCell: UITableViewCell {
         overviewLabel.text = movie.overview
         releaseDateLabel.text = "Release Date: \(movie.releaseDate)"
         
-        if let posterImagePath = URL(string: movie.posterImagePath) {
-                   posterImageView.sd_setImage(with: posterImagePath, placeholderImage: UIImage(named: "poster_path"))
-               }
+        if let posterImageURL = movie.posterImageURL {
+                 print("Loading image from URL: \(posterImageURL)")
+                 posterImageView.sd_setImage(with: posterImageURL, placeholderImage: UIImage(named: "poster_path")) { (image, error, cacheType, url) in
+                     if let error = error {
+                         print("Error loading image: \(error)")
+                     } else {
+                         print("Image loaded successfully from URL: \(url?.absoluteString ?? "No URL")")
+                     }
+                 }
+             } else {
+                 print("Invalid URL string: \(movie.posterImagePath)")
+                 posterImageView.image = UIImage(named: "poster_path")
+             }
+        
+//        if let posterImagePath = URL(string: movie.posterImagePath) {
+//                   posterImageView.sd_setImage(with: posterImagePath, placeholderImage: UIImage(named: "poster_path"))
+//               }
         
       
     }

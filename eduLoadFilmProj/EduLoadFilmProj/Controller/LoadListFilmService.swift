@@ -9,7 +9,7 @@ protocol LoadListFilmProtocol {
 
 //Sevice for movies uploading with no option to be inherit.
 final class LoadListFilmService: LoadListFilmProtocol {
-    //api key
+    //Api key
     private let apiKey = "feacf88cd81377f6cfa24e512f1c61de"
     
     //get movies at API link with the given page.

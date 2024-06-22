@@ -133,7 +133,7 @@ extension FilmViewController {
     
 }
 
-//Loading "first page" and "next page" methods
+//Loading page method
 extension FilmViewController {
     private func loadMovies() {
         currentPage += 1
