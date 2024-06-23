@@ -3,16 +3,16 @@ import UIKit
 //UI related Controller + business logic
 final class FilmViewController: UIViewController {
     
-    //Protocol usage by movieService
+    //LoadListFilmProtocol protocol usage by movieService
     let movieService: LoadListFilmProtocol
     
+    //initialisation of various objects
     init(movieService: LoadListFilmProtocol, movies: [Movie] = [], currentPage: Int = 1) {
         self.movieService = movieService
         self.movies = movies
         self.currentPage = currentPage
         super.init(nibName: nil, bundle: nil)
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -35,7 +35,7 @@ final class FilmViewController: UIViewController {
         //Registering cell
         view.register(TableViewFilmCell.self, forCellReuseIdentifier: TableViewFilmCell.reuseIdentifier)
         
-        //shows tableView on the screen
+        //Shows tableView on the screen
         return view
     }()
     
@@ -63,7 +63,6 @@ final class FilmViewController: UIViewController {
         return bottomSpinner
     }()
     
-    
     //First actions in lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,7 +85,11 @@ final class FilmViewController: UIViewController {
     
     //Stop center OR bottom spinner dependind on the page.
     private func stopSpinner() {
-        if currentPage == 1 { stopCenterSpinner() } else { stopBottomSpinner() }
+        if currentPage == 1 {
+            stopCenterSpinner()
+        } else {
+            stopBottomSpinner()
+        }
     }
 
 }
@@ -133,8 +136,8 @@ extension FilmViewController {
     
 }
 
-//Loading page method
 extension FilmViewController {
+    //Loading page method
     private func loadMovies() {
         currentPage += 1
         if currentPage == 1 { startCenterSpinner() } else { startBottomSpinner() }
@@ -157,4 +160,3 @@ extension FilmViewController {
     }
     
 }
-

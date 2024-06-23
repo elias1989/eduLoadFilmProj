@@ -4,7 +4,7 @@ import UIKit
 //Protocol for auto-tests, Controller re-use purpose, replace the Service.
 protocol LoadListFilmProtocol {
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void)
-    
+
 }
 
 //Sevice for movies uploading with no option to be inherit.
@@ -12,7 +12,7 @@ final class LoadListFilmService: LoadListFilmProtocol {
     //Api key
     private let apiKey = "feacf88cd81377f6cfa24e512f1c61de"
     
-    //get movies at API link with the given page.
+    //Get movies at API link with the given page.
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void) {
         //API link
         let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=\(page)"
@@ -24,7 +24,7 @@ final class LoadListFilmService: LoadListFilmProtocol {
             return
         }
         
-        //if link found checking if
+        //If link found checking if
         URLSession.shared.dataTask(with: url) { data, response, error in
             
             //Check if exists data, downcasted response and error is nil.
@@ -34,7 +34,7 @@ final class LoadListFilmService: LoadListFilmProtocol {
                 return
             }
             
-            // Response status code, decoding MovieResponse from the received data above with two outcomes - success and failure.
+            //Response status code, decoding MovieResponse from the received data above with two outcomes - success and failure.
             if 200 ..< 300 ~= httpResponse.statusCode {
                 do  {
                     let decoder = JSONDecoder()

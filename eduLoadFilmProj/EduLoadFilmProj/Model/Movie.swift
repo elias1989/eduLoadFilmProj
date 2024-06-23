@@ -15,12 +15,11 @@ struct Movie: Codable {
         case releaseDate = "release_date"
         case posterImagePath = "poster_path"
     }
- 
+    
+    //creating URL object
     var posterImageURL: URL? {
             return URL(string: "https://image.tmdb.org/t/p/w500\(posterImagePath)")
-        }
+    }
     
-    
-   // let urlString = "https://api.themoviedb.org/3/movie/popular?api_key=\(apiKey)&page=\(page)"
 }
 
